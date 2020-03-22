@@ -37,7 +37,7 @@ return [
     'backend' => [
         'access' => [
             'roles' => [
-                'create' => 'Create Role',
+                'create' => 'Create New Role',
                 'edit' => 'Edit Role',
                 'management' => 'Role Management',
 
@@ -55,7 +55,7 @@ return [
                 'all_permissions' => 'All Permissions',
                 'change_password' => 'Change Password',
                 'change_password_for' => 'Change Password for :customer',
-                'create' => 'Create Customer',
+                'create' => 'Create New Customer',
                 'deactivated' => 'Deactivated Customers',
                 'deleted' => 'Deleted Customers',
                 'edit' => 'Edit Customer',

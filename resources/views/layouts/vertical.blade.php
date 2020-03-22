@@ -9,7 +9,6 @@
     <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
     <meta content="Coderthemes" name=" Muaadh Esmail Qaid Almrham" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    
     @if(isset($isDark) && $isDark)
         @include('layouts.shared.head', ['isDark' => true])
     @elseif(isset($isRTL) && $isRTL)
@@ -53,12 +52,8 @@
 
         <div class="content-page">
             <div class="content">
-                <!-- Start Content-->
-                <div class="container-fluid">
-                <div class="animated fadeIn">
-                    {{-- @include('layouts.shared.breadcrumb', ) --}}
+                <div class="container-fluid my-5">
                     @yield('content')
-                </div>
                 </div>
             </div>
 
@@ -69,12 +64,4 @@
     @include('layouts.shared.rightbar')
 
     @include('layouts.shared.footer-script')
-
-    @if (getenv('APP_ENV') === 'local')
-    <script id="__bs_script__">//<![CDATA[
-        document.write("<script async src='http://HOST:3000/browser-sync/browser-sync-client.js?v=2.26.7'><\/script>".replace("HOST", location.hostname));
-    //]]></script>
-    @endif
-</body>
-
 </html>

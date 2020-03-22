@@ -1,0 +1,10 @@
+#action-button{
+    border-radius: 5px 5px;
+    margin: 2px;
+    width: 40px;
+
+}
+.alert-soft-success{
+    background-color: #D7F3E3;
+    color: green;
+}

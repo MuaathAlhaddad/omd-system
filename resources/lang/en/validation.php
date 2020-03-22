@@ -170,12 +170,14 @@ return [
                     'sort' => 'Sort',
                 ],
 
-                'users' => [
+                'customers' => [
                     'active' => 'Active',
                     'associated_roles' => 'Associated Roles',
                     'confirmed' => 'Confirmed',
+                    'phone_no' => 'Phone No',
                     'email' => 'E-mail Address',
                     'name' => 'Name',
+                    'address' => 'Address',
                     'last_name' => 'Last Name',
                     'first_name' => 'First Name',
                     'other_permissions' => 'Other Permissions',

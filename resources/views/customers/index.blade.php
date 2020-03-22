@@ -1,47 +1,59 @@
 @extends('layouts.vertical')
 @section('content')
 
+    @if (Session::has('success'))   
+        <div class="alert alert-soft-success alert-dismissible fade show" role="alert">
+                {{Session::get('success')}} <i class="fas fa-check-circle"></i>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+
+
     <div class="card">
         <div class="card-body">
+            {{-- Card Header --}}
             <div class="row">
                 <div class="col-sm-5">
                     <h4 class="card-title mb-0">
                         {{ __('labels.backend.access.customers.management') }}
                     </h4>
-                </div><!--col-->
+                </div>
 
                 <div class="col-sm-7">
                     <div class="btn-toolbar float-right" role="toolbar" aria-label="@lang('labels.general.toolbar_btn_groups')">
-                        <a href="{{ route('customers.create') }}" class="btn btn-success ml-1" data-toggle="tooltip" title="@lang('labels.backend.access.customers.create')"><i class="fas fa-plus-circle"></i></a>
+                        <a href="{{ route('customers.create') }}" id="action-button" class="btn btn-success" data-toggle="tooltip" title="@lang('labels.backend.access.customers.create')"><i class="fas fa-plus-circle"></i></a>
                     </div>
                 </div><!--col-->
 
             </div>
-
+            {{-- Customer List (Card Content) --}}
             <div class="row mt-4">
                 <div class="col">
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>@lang('labels.backend.access.customers.table.first_name')</th>
-                                    <th>@lang('labels.backend.access.customers.table.last_name')</th>
+                                    <th>#</th>
+                                    <th>Full Name</th>
                                     <th>@lang('labels.backend.access.customers.table.email')</th>
                                     <th>@lang('labels.backend.access.customers.table.phone_no')</th>
-                                    <th>@lang('labels.backend.access.customers.table.address')</th>
+                                    <th class="text-center w-25">@lang('labels.backend.access.customers.table.address')</th>
                                     <th>@lang('labels.backend.access.customers.table.created_at')</th>
-                                    <th>@lang('labels.general.actions')</th>
+                                    <th class="text-center">@lang('labels.general.actions')</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($customers as $customer)
-                                    <tr>
-                                        <td>{{ $customer->first_name }}</td>
-                                        <td>{{ $customer->last_name }}</td>
-                                        <td>{{ $customer->email }}</td>
-                                        <td>{{ $customer->phone_no }}</td>
-                                        <td>{{ $customer->address }}</td>
-                                        <td>{{ $customer->created_at }}</td>
+                                @foreach($customers as $index => $customer)
+                                    <tr >
+                                        
+                                        <td class="align-middle">{{ $index+1 }}</td>
+                                        <td class="align-middle">{{ $customer->first_name }} {{ $customer->last_name }}</td>
+                                        <td class="align-middle">{{ $customer->email }}</td>
+                                        <td class="align-middle">{{ $customer->phone_no }}</td>
+                                        <td class="align-middle">{{ $customer->address }}</td>
+                                        <td class="align-middle">{{ $customer->created_at->format('Y-m-d') }}</td>
                                         <td class="btn-td">
                                             @include('customers.index_form_actoins')
                                         </td>
@@ -51,20 +63,18 @@
                         </table>
                     </div>
                 </div><!--col-->
-            </div><!--row-->
-            <div class="row">
-                <div class="col-7">
-                    {{-- <div class="float-left">
-                        {!! $customers->total() !!} {{ trans_choice('labels.backend.access.customers.table.total', $customers->total()) }}
-                    </div> --}}
-                </div><!--col-->
+            </div>
 
-                <div class="col-5">
-                    {{-- <div class="float-right">
-                        {!! $customers->render() !!}
-                    </div> --}}
-                </div><!--col-->
-            </div><!--row-->
-        </div><!--card-body-->
+            {{-- Card Footer --}}
+            <div class="row">
+                <div class="col-5 float-left">
+                        <small class="text-muted">     Total Customers {{ $customers->total() }} </small>  
+                </div>
+
+                <div class="col-7 float-left">
+                        <span>{{ $customers->links() }}</span>
+                </div>
+            </div>
+        </div>
     </div><!--card-->
 @endsection

@@ -36,10 +36,10 @@ Route::namespace('Invoices')->group(function (){
 
 Route::namespace('Customers')->group(function (){
     Route::get('customers/index', 'CustomerController@index')->name('customers.index');
-    Route::post('customers/{id}/show/', 'CustomerController@show')->name('customers.show');
+    Route::get('customers/{customer}/show', 'CustomerController@show')->name('customers.show');
     Route::get('customers/create', 'CustomerController@create')->name('customers.create');
-    Route::get('customers/store', 'CustomerController@store')->name('customers.store');
-    Route::post('customers/{id}/edit', 'CustomerController@edit')->name('customers.edit');
-    Route::get('customers/update', 'CustomerController@update')->name('customers.update');
-    Route::post('customers/{id}/delete', 'CustomerController@destroy')->name('customers.delete');
+    Route::post('customers/store', 'CustomerController@store')->name('customers.store');
+    Route::get('customers/{customer}/edit', 'CustomerController@edit')->name('customers.edit');
+    Route::patch('customers/update', 'CustomerController@update')->name('customers.update');
+    Route::delete('customers/{customer}/delete', 'CustomerController@destroy')->name('customers.delete');
 });
