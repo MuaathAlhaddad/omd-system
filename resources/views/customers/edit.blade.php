@@ -16,6 +16,7 @@
             </div>
 
             <hr>
+            
                                             {{-- Form inputs --}}
 
                 {{-- first_name --}}

@@ -34,12 +34,12 @@ Route::namespace('Invoices')->group(function (){
     Route::post('invoices/{id}/delete', 'InvoiceController@destroy')->name('invoices.delete');
 });
 
+
 Route::namespace('Customers')->group(function (){
-    Route::get('customers/index', 'CustomerController@index')->name('customers.index');
+    Route::get('customers', 'CustomerController@index');
     Route::get('customers/{customer}/show', 'CustomerController@show')->name('customers.show');
     Route::get('customers/create', 'CustomerController@create')->name('customers.create');
     Route::post('customers/store', 'CustomerController@store')->name('customers.store');
     Route::get('customers/{customer}/edit', 'CustomerController@edit')->name('customers.edit');
     Route::patch('customers/update', 'CustomerController@update')->name('customers.update');
-    Route::delete('customers/{customer}/delete', 'CustomerController@destroy')->name('customers.delete');
 });

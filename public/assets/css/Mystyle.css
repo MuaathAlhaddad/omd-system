@@ -1,10 +1,28 @@
-#action-button{
+#action-btn{
     border-radius: 5px 5px;
     margin: 2px;
     width: 40px;
-
 }
 .alert-soft-success{
     background-color: #D7F3E3;
     color: green;
+}
+#action-icon{
+    position: relative;
+    font-size: 20px; 
+    right:4px;
+    top: 2px;
+    color: white; 
+}
+#calendar-icon #user-icon{
+    font-size: 20px;
+    color: #cdd7df;
+}
+#calendar-icon:hover{
+    color: #4F65F8;
+}
+#create-invoice-details label, th{
+    color: black;
+    font-weight: bold;
+
 }

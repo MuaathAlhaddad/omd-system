@@ -1,3 +1,28 @@
+# Project's Details
+ **Developer:**  Muaadh Esmail Qaid Almrham
+ **Description:**  This project is developed to ease the financial process when dealing with client  
+
+
+
+
+# Project's Conventions
+## Naming Conventions 
+- a resource is named in plural e.g. `customers`, `invoices`, `quotatoins`
+- The `partial` page in the view folder of a resource is named in a `snake_case`
+                page action + desc of the part e.g. `create_accordion`
+                *_**Note:** if the desc of the part is comprised of more than a word then you should use the `camelCase` e.g. `create_accordionCompanyDetails`* <br>  
+                *_**Note:** if the part belongs to many action pages (CRUD) then just use snake_case  e.g. `alert_success` or `accordion_company_details`*
+- ID seletor shall be named in `kebab-case` 
+
+## Organization Conventions
+- each resource (`customers/invoices/quotatoins ...`) have it's own folder in View/Controller
+- The  resource view folder contains
+    - The main pages within the resource `CRUD`
+    - `partials` folder contains some parts of the `main pages`
+    -   
+
+
+
 <p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
 
 <p align="center">

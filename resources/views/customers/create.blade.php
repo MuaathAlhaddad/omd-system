@@ -24,7 +24,10 @@
                                     {{__('validation.attributes.backend.access.customers.first_name')}}
                                 </label>
                                 <div class="col-md-10">
-                                    <input type="text" name="first_name" class="form-control" placeholder="{{__('validation.attributes.backend.access.customers.first_name')}}" required autofocus >
+                                    @error('first_name')
+                                        <span class="text-danger"> {{$message}} </span>  
+                                    @enderror
+                                    <input type="text" name="first_name" class="form-control @error('first_name') is-invalid @enderror" placeholder="{{__('validation.attributes.backend.access.customers.first_name')}}" required autofocus >
                                 </div>
                             </div>
                         </div>
@@ -38,7 +41,10 @@
                                     {{__('validation.attributes.backend.access.customers.last_name')}}
                                 </label>
                                 <div class="col-md-10">
-                                    <input type="text" name="last_name" class="form-control" placeholder="{{__('validation.attributes.backend.access.customers.last_name')}}" required autofocus >
+                                    @error('last_name')
+                                        <span class="text-danger">{{$message}}</span>
+                                    @enderror
+                                    <input type="text" name="last_name" class="form-control @error('last_name') is-invalid @enderror" placeholder="{{__('validation.attributes.backend.access.customers.last_name')}}" required autofocus >
                                 </div>
                             </div>
                         </div>
@@ -52,7 +58,10 @@
                                     {{__('validation.attributes.backend.access.customers.email')}}
                                 </label>
                                 <div class="col-md-10">
-                                    <input type="email" name="email" class="form-control" placeholder="{{__('validation.attributes.backend.access.customers.email')}}" required autofocus >
+                                    @error('email')
+                                        <span class="text-danger">{{$message}}</span>
+                                    @enderror
+                                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="{{__('validation.attributes.backend.access.customers.email')}}" required autofocus >
                                 </div>
                             </div>
                         </div>
@@ -66,7 +75,10 @@
                                     {{__('validation.attributes.backend.access.customers.phone_no')}}
                                 </label>
                                 <div class="col-md-10">
-                                    <input type="text" name="phone_no" class="form-control" placeholder="{{__('validation.attributes.backend.access.customers.phone_no')}}" required autofocus >
+                                    @error('phone_no')
+                                        <span class="text-danger">{{$message}}</span>
+                                    @enderror
+                                    <input type="text" name="phone_no" class="form-control @error('phone_no') is-invalid @enderror" placeholder="{{__('validation.attributes.backend.access.customers.phone_no')}}" required autofocus >
                                 </div>
                             </div>
                         </div>
@@ -80,7 +92,10 @@
                                     {{__('validation.attributes.backend.access.customers.address')}}
                                 </label>
                                 <div class="col-md-10">
-                                    <input type="text" name="address" class="form-control" placeholder="{{__('validation.attributes.backend.access.customers.address')}}" required autofocus >
+                                    @error('address')
+                                        <span class="text-danger">{{$message}}</span>
+                                    @enderror
+                                    <input type="text" name="address" class="form-control @error('address') is-invalid @enderror" placeholder="{{__('validation.attributes.backend.access.customers.address')}}" required autofocus >
                                 </div>
                             </div>
                         </div>

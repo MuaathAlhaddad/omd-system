@@ -1,4 +1,23 @@
 @extends('layouts.vertical')
 @section('content')
-    <h1>Invoice Create Page</h1>
+
+  
+    @include('invoices/partials/alert_success')
+
+    <div class="container">
+        @include('invoices/partials/create_btnsAction')
+    </div>
+
+    <div class="container">
+        @include('invoices/partials/create_accordionCompnayDetails')
+    </div>
+
+    <div class="container">
+        @include('invoices/partials/create_invoiceDetails')
+    </div>
+
+    <div class="container">
+        @include('invoices/partials/create_footer')
+    </div>
+
 @endsection

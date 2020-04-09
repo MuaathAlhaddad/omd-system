@@ -23,7 +23,7 @@
         </a>
     </li>
     <li>
-        <a href="{{route('customers.index')}}">
+        <a href="{{url('/customers')}}">
             <i data-feather="user"></i>
             <span> Customers </span>
         </a>

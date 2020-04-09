@@ -6,13 +6,13 @@ use App\Customer;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 class CustomerController extends Controller
 {
     public function index()
     {
-        return view('customers.index', ['customers' => Customer::paginate(10)]);
+        return view('customers.index');
+        // return view('customers.index', ['customers' => Customer::paginate(10)]);
     }
 
     public function create()
@@ -38,14 +38,14 @@ class CustomerController extends Controller
 
     public function update(Request $request)
     {   
-        Customer::where('id', $request->id)
-                ->update($this->validateForm($request));
+        $customer = Customer::where('id', $request->id)
+        ->update($this->validateForm($request));
         return redirect(route('customers.index'))->with('success', 'Cusotmer Updated Successfully');
     }
 
     public function destroy($id, Request $request)
     {
-        Customer::where('id', $id)
+        $customer = Customer::where('id', $id)
                 ->delete();
         return redirect(route('customers.index'))->with('success', 'Cusotmer Deleted Successfully');
     }
