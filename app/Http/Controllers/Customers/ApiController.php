@@ -25,10 +25,10 @@ class ApiController extends Controller
         return new CustomerResource($customer);
     }
 
-    public function update(Request $request)
+    public function update(Request $request, Customer $customer)
     {   
-        $customer = Customer::where('id', $request->id)
-        ->update($this->validateForm($request));
+        $customer->update($this->validateForm($request));
+        $customer->save();
         return new CustomerResource($customer);
     }
 

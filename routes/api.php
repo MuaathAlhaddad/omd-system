@@ -20,11 +20,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::namespace('Customers')->group(function (){
+    // Route::resource('customers', 'ApiController');
     Route::get('customers', 'ApiController@index');
-    Route::get('customers/{customer}/show', 'ApiController@show');
-    Route::get('customers/create', 'ApiController@create');
-    Route::post('customers/store', 'ApiController@store');
-    Route::get('customers/{customer}/edit', 'ApiController@edit');
-    Route::patch('customers/update', 'ApiController@update');
+    Route::post('customers', 'ApiController@store');
+    Route::get('customers/{customer}', 'ApiController@show');
+    Route::put('customers/{customer}', 'ApiController@update');
     Route::delete('customers/{customer}', 'ApiController@destroy');
 });
+
