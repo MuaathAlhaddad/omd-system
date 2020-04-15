@@ -1,6 +1,7 @@
 <template>
 
     <div class="card ">
+
         <div class="card-body">
 
             <!-- Card Header (Title & Create btn) -->
@@ -23,64 +24,64 @@
 
                 <!-- Modal Customer Create-->
                 <div class="modal fade" id="customer-form" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Create New Customer</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-
-                        <!-- Modal Body -->
-                        <div class="modal-body">
-                            <!-- first_name -->
-                            <div class="form-group row">
-                                <label for="first_name" class="col-sm-3 col-form-label">First Name</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" v-model="customer.first_name">
-                                </div>
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <!-- Modal header -->
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Create New Customer</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
                             </div>
+                                <!-- Modal Body -->
+                                <div class="modal-body">
+                                        <!-- first_name -->
+                                        <div class="form-group row">
+                                            <label for="first_name" class="col-sm-3 col-form-label">First Name</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" v-model="customer.first_name">
+                                            </div>
+                                        </div>
 
-                            <!-- last_name -->
-                            <div class="form-group row">
-                                <label for="last_name" class="col-sm-3 col-form-label">Last Name</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" v-model="customer.last_name">
-                                </div>
-                            </div>
+                                        <!-- last_name -->
+                                        <div class="form-group row">
+                                            <label for="last_name" class="col-sm-3 col-form-label">Last Name</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" v-model="customer.last_name">
+                                            </div>
+                                        </div>
 
-                            <!-- Email -->
-                            <div class="form-group row">
-                                <label for="email" class="col-sm-3 col-form-label">Email</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" v-model="customer.email">
-                                </div>
-                            </div>
+                                        <!-- Email -->
+                                        <div class="form-group row">
+                                            <label for="email" class="col-sm-3 col-form-label">Email</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" v-model="customer.email">
+                                            </div>
+                                        </div>
 
-                            <!-- phone_no -->
-                            <div class="form-group row">
-                                <label for="phone_no" class="col-sm-3 col-form-label">Phone no</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" v-model="customer.phone_no">
-                                </div>
-                            </div>
+                                        <!-- phone_no -->
+                                        <div class="form-group row">
+                                            <label for="phone_no" class="col-sm-3 col-form-label">Phone no</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" v-model="customer.phone_no">
+                                            </div>
+                                        </div>
 
-                            <!-- address -->
-                            <div class="form-group row">
-                                <label for="address" class="col-sm-3 col-form-label">Address</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" v-model="customer.address">
+                                        <!-- address -->
+                                        <div class="form-group row">
+                                            <label for="address" class="col-sm-3 col-form-label">Address</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" v-model="customer.address">
+                                            </div>
+                                        </div>
                                 </div>
-                            </div>
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button class="btn btn-primary" data-dismiss="modal" type="submit" @click="CreateCustomer">Add Customer</button>
+                                </div>
                         </div>
-                    
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button class="btn btn-primary" @click="CreateCustomer(customer)" data-dismiss="modal">Add Customer</button>
-                        </div>
                     </div>
-                </div>
                 </div>
 
 
@@ -92,12 +93,12 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>Full Name</th>
-                                    <th>Email</th>
-                                    <th>Phone No</th>
-                                    <th class="text-center w-25">Address</th>
-                                    <th>Created at</th>
+                                    <th @click="orderCustomers('index')">#</th>
+                                    <th @click="orderCustomers('first_name')">Full Name</th>
+                                    <th @click="orderCustomers('email')">Email</th>
+                                    <th @click="orderCustomers('phone_no')">Phone No</th>
+                                    <th @click="orderCustomers('address')" class="text-center w-25">Address</th>
+                                    <th @click="orderCustomers('created_at')">Created at</th>
                                     <th class="text-center">Actions</th>
                                 </tr>
                             </thead>
@@ -135,6 +136,7 @@
                                                                 </button>
                                                             </div>
 
+                                                          <!-- <form action="" @submit="UpdateCustomer"> -->
                                                             <div class="modal-body">
                                                                 <!-- first_name -->
                                                                 <div class="form-group row">
@@ -179,14 +181,16 @@
                                                             
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                                <button class="btn btn-primary" @click="EditCustomer(customer)" data-dismiss="modal">Save changes</button>
+                                                                <button class="btn btn-primary" type="button" @click="UpdateCustomer(customer)" data-dismiss="modal">Save changes</button>
                                                             </div>
+                                                          <!-- </form> -->
+
                                                         </div>
                                                     </div>
                                                 </div>
 
                                             <!-- {{-- DELETE --}} -->
-                                            <button  v-on:click="DeleteCustomer(customer.id)" data-toggle="tooltip" data-placement="top" title="Delete Customer" class="btn btn-danger ">
+                                            <button  v-on:click="DeleteCustomer(customer)" data-toggle="tooltip" data-placement="top" title="Delete Customer" class="btn btn-danger ">
                                                     <i class="fas fa-trash"></i>        
                                             </button>
                                         </div>                                               
@@ -210,7 +214,7 @@
                                 <ul class="pagination">
                                     <li class="page-item"><a class="page-link" :href="pagination.prev">Previous</a></li>
                                     <li class="page-item"><a class="page-link" > {{pagination.current}} out of {{pagination.last}} </a></li>
-                                    <li class="page-item"><a class="page-link" :href="pagination.prev">Next</a></li>
+                                    <li class="page-item"><a class="page-link" :href="pagination.next">Next</a></li>
                                 </ul>
                             </nav>
                         </span>
@@ -218,6 +222,8 @@
             </div>
 
         </div>
+        
+
     </div>
           
 
@@ -238,6 +244,7 @@ export default {
                 created_at: '',
                 updated_at: '',
             }, 
+            dismiss_modal:'',
             pagination:{
                 prev: '', 
                 next: '', 
@@ -249,14 +256,28 @@ export default {
     created() {
             this.fetchCustomers();
     },
+    computed:{
+        reverseCustomers(){
+            return this.customers.reverse();
+        },
+        // orderByCreated_at(){
+             
+        // },
+        now(){
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const now = new Date();
+            return now.getDate()+'-'+now.getMonth()+'-'+now.getFullYear();
+        }
+    },
     methods: {
+        orderCustomers(attribute){
+            this.customers = _.orderBy(this.customers, attribute);
+        },
         fetchCustomers(){
             fetch('api/customers')
             .then( res => res.json())
             .then( res => {
-                console.log(res);
-                this.page_title = "Customer Management";
-                this.index_mode = true;
                 this.customers = res.data;
                 this.pagination.prev = res.links.prev;
                 this.pagination.next = res.links.next;
@@ -265,52 +286,44 @@ export default {
             })
             .catch( err => console.log(err));
         },
-        DeleteCustomer(customer_id){
-                var answer = confirm('Are you Sure?');
-                if (answer == true) {
-                    fetch(`api/customers/${customer_id}`, {
+        DeleteCustomer(customer){
+                if (confirm('Are you Sure?')) {
+                    fetch(`api/customers/${customer.id}`, {
                         method: 'Delete'
                     })
                     .then(res => res.json())
                     .then(data => {
-                        alert('Customer Deleted');
-                        this.fetchCustomers();
+                        alert('Customer Deleted Successfully');
+                        var index = this.customers.indexOf(customer);
+                        this.$delete(this.customers, index);
                     })
-                    .catch( error => console.log(error));    
-                }
-                else{
-                    
+                    .catch( error => console.log(error));
                 }
                 
         }, 
-        EditCustomer(customer){
-            this.AssignResource(customer);
-            
+        UpdateCustomer(customer){
+            customer.updated_at = this.now;
+            customer.first_name = customer.first_name.charAt(0).toUpperCase() + customer.first_name.slice(1);
+            console.log
             fetch(`api/customers/${customer.id}`, {
                 method: 'put',
-                body: JSON.stringify(this.customer), 
+                body: JSON.stringify(customer), 
                 headers:{
                     'content-type': 'application/json'
                 }
             })
             .then(res => res.json())
             .then(data => {
+                    // console.log(data.data);
                     alert('Customer Update Successfully');
-                    // this.customer.first_name = '';
-                    // this.customer.last_name = '';
-                    // this.customer.email = '';
-                    // this.customer.phone_no = '';
-                    // this.customer.address = '';
-                    this.fetchCustomers();
             })
             .catch(error => console.log(error));
-            
         },
-        CreateCustomer(customer){
-            alert('here');
-            console.log(customer);
-            this.AssignResource(customer);
-            fetch('api/customers/', {
+        CreateCustomer(){
+            this.customer.created_at = this.now;
+            this.customer.first_name = this.customer.first_name.charAt(0).toUpperCase() + this.customer.first_name.slice(1);
+            console.log(this.customer);
+            fetch('api/customers', {
                 method: 'post', 
                 body: JSON.stringify(this.customer), 
                 headers:{
@@ -320,17 +333,9 @@ export default {
             .then(res => res.json())
             .then(data => {
                 alert('Customer Added');
-                this.fetchCustomers();
+                this.customers.push(this.customer);
             })
             .catch(err => console.log(err));
-        }, 
-        AssignResource(customer){
-            this.customer.id = customer.id;
-            this.customer.first_name = customer.first_name;
-            this.customer.last_name = customer.last_name;
-            this.customer.email = customer.email;
-            this.customer.address = customer.address;
-            this.customer.phone_no = customer.phone_no;
         }
     } 
 }

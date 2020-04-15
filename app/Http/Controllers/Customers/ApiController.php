@@ -17,7 +17,7 @@ class ApiController extends Controller
 
     public function store(Request $request)
     {
-        return new CustomerResource(Customer::create($this->validateForm($request)));
+        return new CustomerResource(Customer::create($request->all()));
     }
 
     public function show(Customer $customer)
@@ -27,8 +27,9 @@ class ApiController extends Controller
 
     public function update(Request $request, Customer $customer)
     {   
-        $customer->update($this->validateForm($request));
+        $customer->update($request->all());
         $customer->save();
+    
         return new CustomerResource($customer);
     }
 

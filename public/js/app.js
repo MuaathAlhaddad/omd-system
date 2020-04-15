@@ -2160,6 +2160,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['data-target'],
   data: function data() {
@@ -2175,6 +2181,7 @@ __webpack_require__.r(__webpack_exports__);
         created_at: '',
         updated_at: ''
       },
+      dismiss_modal: '',
       pagination: {
         prev: '',
         next: '',
@@ -2186,16 +2193,28 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     this.fetchCustomers();
   },
+  computed: {
+    reverseCustomers: function reverseCustomers() {
+      return this.customers.reverse();
+    },
+    // orderByCreated_at(){
+    // },
+    now: function now() {
+      var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      var now = new Date();
+      return now.getDate() + '-' + now.getMonth() + '-' + now.getFullYear();
+    }
+  },
   methods: {
+    orderCustomers: function orderCustomers(attribute) {
+      this.customers = _.orderBy(this.customers, attribute);
+    },
     fetchCustomers: function fetchCustomers() {
       var _this = this;
 
       fetch('api/customers').then(function (res) {
         return res.json();
       }).then(function (res) {
-        console.log(res);
-        _this.page_title = "Customer Management";
-        _this.index_mode = true;
         _this.customers = res.data;
         _this.pagination.prev = res.links.prev;
         _this.pagination.next = res.links.next;
@@ -2205,56 +2224,51 @@ __webpack_require__.r(__webpack_exports__);
         return console.log(err);
       });
     },
-    DeleteCustomer: function DeleteCustomer(customer_id) {
+    DeleteCustomer: function DeleteCustomer(customer) {
       var _this2 = this;
 
-      var answer = confirm('Are you Sure?');
-
-      if (answer == true) {
-        fetch("api/customers/".concat(customer_id), {
+      if (confirm('Are you Sure?')) {
+        fetch("api/customers/".concat(customer.id), {
           method: 'Delete'
         }).then(function (res) {
           return res.json();
         }).then(function (data) {
-          alert('Customer Deleted');
+          alert('Customer Deleted Successfully');
 
-          _this2.fetchCustomers();
+          var index = _this2.customers.indexOf(customer);
+
+          _this2.$delete(_this2.customers, index);
         })["catch"](function (error) {
           return console.log(error);
         });
-      } else {}
+      }
     },
-    EditCustomer: function EditCustomer(customer) {
-      var _this3 = this;
-
-      this.AssignResource(customer);
+    UpdateCustomer: function UpdateCustomer(customer) {
+      customer.updated_at = this.now;
+      customer.first_name = customer.first_name.charAt(0).toUpperCase() + customer.first_name.slice(1);
+      console.log;
       fetch("api/customers/".concat(customer.id), {
         method: 'put',
-        body: JSON.stringify(this.customer),
+        body: JSON.stringify(customer),
         headers: {
           'content-type': 'application/json'
         }
       }).then(function (res) {
         return res.json();
       }).then(function (data) {
-        alert('Customer Update Successfully'); // this.customer.first_name = '';
-        // this.customer.last_name = '';
-        // this.customer.email = '';
-        // this.customer.phone_no = '';
-        // this.customer.address = '';
-
-        _this3.fetchCustomers();
+        // console.log(data.data);
+        alert('Customer Update Successfully');
       })["catch"](function (error) {
         return console.log(error);
       });
     },
-    CreateCustomer: function CreateCustomer(customer) {
-      var _this4 = this;
+    CreateCustomer: function CreateCustomer() {
+      var _this3 = this;
 
-      alert('here');
-      console.log(customer);
-      this.AssignResource(customer);
-      fetch('api/customers/', {
+      this.customer.created_at = this.now;
+      this.customer.first_name = this.customer.first_name.charAt(0).toUpperCase() + this.customer.first_name.slice(1);
+      console.log(this.customer);
+      fetch('api/customers', {
         method: 'post',
         body: JSON.stringify(this.customer),
         headers: {
@@ -2265,18 +2279,10 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (data) {
         alert('Customer Added');
 
-        _this4.fetchCustomers();
+        _this3.customers.push(_this3.customer);
       })["catch"](function (err) {
         return console.log(err);
       });
-    },
-    AssignResource: function AssignResource(customer) {
-      this.customer.id = customer.id;
-      this.customer.first_name = customer.first_name;
-      this.customer.last_name = customer.last_name;
-      this.customer.email = customer.email;
-      this.customer.address = customer.address;
-      this.customer.phone_no = customer.phone_no;
     }
   }
 });
@@ -38048,12 +38054,8 @@ var render = function() {
                     "button",
                     {
                       staticClass: "btn btn-primary",
-                      attrs: { "data-dismiss": "modal" },
-                      on: {
-                        click: function($event) {
-                          return _vm.CreateCustomer(_vm.customer)
-                        }
-                      }
+                      attrs: { "data-dismiss": "modal", type: "submit" },
+                      on: { click: _vm.CreateCustomer }
                     },
                     [_vm._v("Add Customer")]
                   )
@@ -38068,7 +38070,84 @@ var render = function() {
         _c("div", { staticClass: "col" }, [
           _c("div", { staticClass: "table-responsive" }, [
             _c("table", { staticClass: "table" }, [
-              _vm._m(2),
+              _c("thead", [
+                _c("tr", [
+                  _c(
+                    "th",
+                    {
+                      on: {
+                        click: function($event) {
+                          return _vm.orderCustomers("index")
+                        }
+                      }
+                    },
+                    [_vm._v("#")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "th",
+                    {
+                      on: {
+                        click: function($event) {
+                          return _vm.orderCustomers("first_name")
+                        }
+                      }
+                    },
+                    [_vm._v("Full Name")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "th",
+                    {
+                      on: {
+                        click: function($event) {
+                          return _vm.orderCustomers("email")
+                        }
+                      }
+                    },
+                    [_vm._v("Email")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "th",
+                    {
+                      on: {
+                        click: function($event) {
+                          return _vm.orderCustomers("phone_no")
+                        }
+                      }
+                    },
+                    [_vm._v("Phone No")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "th",
+                    {
+                      staticClass: "text-center w-25",
+                      on: {
+                        click: function($event) {
+                          return _vm.orderCustomers("address")
+                        }
+                      }
+                    },
+                    [_vm._v("Address")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "th",
+                    {
+                      on: {
+                        click: function($event) {
+                          return _vm.orderCustomers("created_at")
+                        }
+                      }
+                    },
+                    [_vm._v("Created at")]
+                  ),
+                  _vm._v(" "),
+                  _c("th", { staticClass: "text-center" }, [_vm._v("Actions")])
+                ])
+              ]),
               _vm._v(" "),
               _c(
                 "tbody",
@@ -38170,7 +38249,7 @@ var render = function() {
                                 },
                                 [
                                   _c("div", { staticClass: "modal-content" }, [
-                                    _vm._m(3, true),
+                                    _vm._m(2, true),
                                     _vm._v(" "),
                                     _c("div", { staticClass: "modal-body" }, [
                                       _c(
@@ -38455,10 +38534,15 @@ var render = function() {
                                         "button",
                                         {
                                           staticClass: "btn btn-primary",
-                                          attrs: { "data-dismiss": "modal" },
+                                          attrs: {
+                                            type: "button",
+                                            "data-dismiss": "modal"
+                                          },
                                           on: {
                                             click: function($event) {
-                                              return _vm.EditCustomer(customer)
+                                              return _vm.UpdateCustomer(
+                                                customer
+                                              )
                                             }
                                           }
                                         },
@@ -38482,7 +38566,7 @@ var render = function() {
                               },
                               on: {
                                 click: function($event) {
-                                  return _vm.DeleteCustomer(customer.id)
+                                  return _vm.DeleteCustomer(customer)
                                 }
                               }
                             },
@@ -38542,7 +38626,7 @@ var render = function() {
                     "a",
                     {
                       staticClass: "page-link",
-                      attrs: { href: _vm.pagination.prev }
+                      attrs: { href: _vm.pagination.next }
                     },
                     [_vm._v("Next")]
                   )
@@ -38625,28 +38709,6 @@ var staticRenderFns = [
         },
         [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
       )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", [_vm._v("#")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Full Name")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Email")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Phone No")]),
-        _vm._v(" "),
-        _c("th", { staticClass: "text-center w-25" }, [_vm._v("Address")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Created at")]),
-        _vm._v(" "),
-        _c("th", { staticClass: "text-center" }, [_vm._v("Actions")])
-      ])
     ])
   },
   function() {
@@ -38802,6 +38864,30 @@ var staticRenderFns = [
     ])
   }
 ]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/invoices/app.vue?vue&type=template&id=3f90697a&":
+/*!***************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/invoices/app.vue?vue&type=template&id=3f90697a& ***!
+  \***************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [_c("router-view")], 1)
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -53909,6 +53995,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _routes_web_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./routes/web.js */ "./resources/js/routes/web.js");
 /* harmony import */ var _components_customers_app_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/customers/app.vue */ "./resources/js/components/customers/app.vue");
+/* harmony import */ var _components_invoices_app_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/invoices/app.vue */ "./resources/js/components/invoices/app.vue");
+
 
 
 
@@ -53918,6 +54006,10 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#customer-app',
   router: _routes_web_js__WEBPACK_IMPORTED_MODULE_1__["default"],
+  // components:{
+  //     'omd-customers': customers, 
+  //     'omd-invoices': invoices, 
+  // },
   render: function render(createElement) {
     return createElement(_components_customers_app_vue__WEBPACK_IMPORTED_MODULE_2__["default"]);
   }
@@ -54177,6 +54269,59 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/invoices/app.vue":
+/*!**************************************************!*\
+  !*** ./resources/js/components/invoices/app.vue ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _app_vue_vue_type_template_id_3f90697a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./app.vue?vue&type=template&id=3f90697a& */ "./resources/js/components/invoices/app.vue?vue&type=template&id=3f90697a&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+var script = {}
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__["default"])(
+  script,
+  _app_vue_vue_type_template_id_3f90697a___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _app_vue_vue_type_template_id_3f90697a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/invoices/app.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/invoices/app.vue?vue&type=template&id=3f90697a&":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/components/invoices/app.vue?vue&type=template&id=3f90697a& ***!
+  \*********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_app_vue_vue_type_template_id_3f90697a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./app.vue?vue&type=template&id=3f90697a& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/invoices/app.vue?vue&type=template&id=3f90697a&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_app_vue_vue_type_template_id_3f90697a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_app_vue_vue_type_template_id_3f90697a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/routes/web.js":
 /*!************************************!*\
   !*** ./resources/js/routes/web.js ***!
@@ -54199,13 +54344,14 @@ vue__WEBPACK_IMPORTED_MODULE_1___default.a.use(vue_router__WEBPACK_IMPORTED_MODU
 /* harmony default export */ __webpack_exports__["default"] = (new vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]({
   routes: [{
     path: '/customers',
-    name: 'customer-index',
+    name: 'customers-index',
     component: _components_customers_index_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
   }, {
     path: '/customers/:id',
-    name: 'customer-show',
+    name: 'customers-show',
     component: _components_customers_show_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
-  }],
+  } // {path:'/invoices/create', name: 'invoices-create', component: invoice-create},
+  ],
   mode: 'history'
 }));
 

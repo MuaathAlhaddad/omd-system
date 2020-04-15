@@ -46,6 +46,7 @@ class InvoiceController extends Controller
      */
     public function show($id)
     {
+        dd('here');
         return view('invoices.show'); 
     }
 

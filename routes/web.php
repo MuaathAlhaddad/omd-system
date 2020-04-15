@@ -26,14 +26,13 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::namespace('Invoices')->group(function (){
     Route::get('invoices/index', 'InvoiceController@index')->name('invoices.index');
-    Route::post('invoices/show', 'InvoiceController@show')->name('invoices.show');
+    Route::get('invoices/show/{?id}', 'InvoiceController@show')->name('invoices.show');
     Route::get('invoices/create', 'InvoiceController@create')->name('invoices.create');
     Route::get('invoices/store', 'InvoiceController@store')->name('invoices.store');
     Route::get('invoices/edit', 'InvoiceController@edit')->name('invoices.edit');
     Route::get('invoices/update', 'InvoiceController@update')->name('invoices.update');
     Route::post('invoices/{id}/delete', 'InvoiceController@destroy')->name('invoices.delete');
 });
-
 
 Route::namespace('Customers')->group(function (){
     Route::get('customers', 'CustomerController@index')->name('customers.index');
