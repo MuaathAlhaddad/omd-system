@@ -1,5 +1,5 @@
 <!-- Topbar Start -->
-<div class="navbar navbar-expand flex-column flex-md-row navbar-custom">
+<div class="navbar navbar-expand flex-column flex-md-row navbar-custom position-fixed">
     <div class="container-fluid">
         <!-- LOGO -->
         <a href="/" class="navbar-brand mr-0 mr-md-2 logo">

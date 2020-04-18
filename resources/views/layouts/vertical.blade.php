@@ -2,14 +2,12 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
-
     <title>OMD SYSTEM</title>
-    <meta content="Developer" name=" Muaadh Esmail Qaid Almrham" />
+    
     @include('layouts.shared.head')
 
 </head>
-    <body>
+    <body class="bg-light">
 
     <div id="wrapper" id="app">
 
@@ -18,7 +16,7 @@
 
         <div class="content-page">
             <div class="content">
-                <div class="container-fluid my-5">
+                <div class="container-fluid py-5">
 
                     @yield('content')
 

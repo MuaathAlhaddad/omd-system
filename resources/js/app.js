@@ -2,7 +2,10 @@ import Vue from 'vue';
 import router from './routes/web.js';
 import customers from './components/customers/app.vue';
 import invoices from './components/invoices/app.vue';
-
+import bootstrapVue from 'bootstrap-vue';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
+Vue.use(bootstrapVue);
 
 require('./bootstrap');
 
