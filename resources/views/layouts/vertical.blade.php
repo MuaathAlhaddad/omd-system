@@ -9,17 +9,17 @@
 </head>
     <body class="bg-light">
 
-    <div id="wrapper" id="app">
+    <div id="wrapper">
 
         @include('layouts.shared.header')
         @include('layouts.shared.sidebar')
 
-        <div class="content-page">
+        <div class="content-page" >
             <div class="content">
-                <div class="container-fluid py-5">
-
-                    @yield('content')
-
+                <div class="container-fluid py-5">    
+                    <div id="app">
+                    </div>
+                    
                 </div>
             </div>
 

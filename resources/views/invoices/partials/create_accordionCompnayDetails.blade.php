@@ -36,7 +36,7 @@
                                     Malaysia          
                                 </span>
                                     
-                                <a href="route('company_details.edit', $company_details->id)" class="btn btn-link font-weight-bold">
+                                <a href="" class="btn btn-link font-weight-bold">
                                     Edit your business address and contact details 
                                 </a>                   
                             </div >

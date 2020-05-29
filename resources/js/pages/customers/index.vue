@@ -1,29 +1,18 @@
 <template>
 <div>
-    
-
     <div class="card">
 
         <div class="card-body">
 
             <!-- Card Header (Title & Create btn) -->
-            <div class="row">
+            <div class="row ">
                     <div class="col-sm-4">
-                        <h4 class="card-title">
+                        <h4 class="card-title font-weight-bold">
                             User Management
                         </h4>
                     </div> 
 
                     <div class="col-sm-4 align-self-end">
-                        <!-- <b-pagination
-                            class=" m-auto justify-content-center"
-                            pills
-                            :per-page="per_page"
-                            :total-rows="rows"
-                            v-model="current_page"
-                            aria-controls="#customers-table"
-                        >
-                        </b-pagination> -->
                     </div>
             
                     <div class=" col-sm-4">
@@ -98,25 +87,21 @@
                     </div>
                 </div>
 
-
-
-            <!-- Customer List (Card Content)  -->
+            <!-- Search Bar -->
             <div class="row ">
-                <div class="col">
-                    <b-input-group class="w-75 m-auto">                        
+                    <b-input-group class=" w-50 m-auto ">                        
                         <b-form-input
-                        id="searchbar"
                         placeholder="Search for Customers"
                         v-model="filter"
-                        class="rounded-pill"
+                        class="rounded-pill searchbar"
                         >
                         </b-form-input>
                     </b-input-group>
+            </div>
 
-                    
-
-                
-                    
+            <!-- Customer List (Card Content)  -->
+            <div class="row ">
+                <div class="col">  
                     <b-table
                     show-empty 
                     :filter="filter"
@@ -130,7 +115,6 @@
                     :current-page="current_page" 
                     responsive
                     hover
-                    sort-icon-left
                     head-variant="light"
                     class="text-center mt-4"
                     >
@@ -261,141 +245,131 @@
         </div>
         
 
-    </div>
-          
-
-
+    </div>    
 </div>
 </template>
 <script>
-export default {
-    props:['data-target'],
-    data() {
-        return {
-            per_page: 10,
-            current_page: 1,
-            fields: [
-                {key:'#', sortable: false},
-                {key:'first_name',label: 'Name', sortable: true},
-                {key:'phone_no', sortable: true},
-                {key:'email', sortable: true},
-                {key:'address', sortable: true, class:"w-25"},
-                {key:'created_at', sortable: true},
-                {key:'actions', sortable: false},
-                ],
-            sort_by: 'created_at',
-            sort_desc: false,
-            filter: null,
-            filter_on:[],
-            total_rows: 1,
-            customers: [],
-            customer: {
-                id: '', 
-                first_name: '',
-                last_name: '',
-                phone_no: '',
-                address: '',
-                email: '',
-                created_at: '',
-                updated_at: '',
-            }, 
-            dismiss_modal:'',
+    export default {
+        props:['data-target'],
+        data() {
+            return {
+                per_page: 10,
+                current_page: 1,
+                fields: [
+                    {key:'#', sortable: false},
+                    {key:'first_name',label: 'Name', sortable: true, class:"w-25"},
+                    {key:'phone_no', sortable: true},
+                    {key:'email', sortable: true},
+                    {key:'created_at', sortable: true},
+                    {key:'actions', sortable: false},
+                    ],
+                sort_by: 'created_at',
+                sort_desc: false,
+                filter: null,
+                filter_on:[],
+                customers: [],
+                customer: {
+                    id: '', 
+                    first_name: '',
+                    last_name: '',
+                    phone_no: '',
+                    address: '',
+                    email: '',
+                    created_at: '',
+                    updated_at: '',
+                }, 
+                dismiss_modal:'',
+            }
+        },
+        created() {
+                this.fetchCustomers();
+        },
+        computed:{
+            now(){
+                const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                const now = new Date();
+                return now.getDate()+'-'+now.getMonth()+'-'+now.getFullYear();
+            },
+            rows() {
+            return this.customers.length
         }
-    },
-    created() {
-            this.fetchCustomers();
-    },
-    computed:{
-        now(){
-            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            const now = new Date();
-            return now.getDate()+'-'+now.getMonth()+'-'+now.getFullYear();
         },
-        rows() {
-        return this.customers.length
-      }
-    },
-    methods: {
-        fetchCustomers(url){
-            url = url || 'api/customers';
-            fetch(url)
-            .then( res => res.json())
-            .then( res => {
-                this.customers = res.data;
-            })
-            .catch( err => console.log(err));
+        methods: {
+            fetchCustomers(){
+                fetch('api/customers')
+                .then( res => res.json())
+                .then( res => {
+                    this.customers = res.data;
+                })
+                .catch( err => console.log(err));
+            },
+            DeleteCustomer(customer){
+                    if (confirm('Are you Sure?')) {
+                        fetch(`api/customers/${customer.id}`, {
+                            method: 'Delete'
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            alert('Customer Deleted Successfully');
+                            var index = this.customers.indexOf(customer);
+                            this.$delete(this.customers, index);
+                        })
+                        .catch( error => console.log(error));
+                    }
+                    
+            }, 
+            UpdateCustomer(customer){
+                customer.updated_at = this.now;
+                customer.first_name = customer.first_name.charAt(0).toUpperCase() + customer.first_name.slice(1);
+                fetch(`api/customers/${customer.id}`, {
+                    method: 'put',
+                    body: JSON.stringify(customer), 
+                    headers:{
+                        'content-type': 'application/json'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                        // console.log(data.data);
+                        alert('Customer Update Successfully');
+                })
+                .catch(error => console.log(error));
+            },
+            CreateCustomer(){
+                this.customer.created_at = this.now;
+                this.customer.first_name = this.customer.first_name.charAt(0).toUpperCase() + this.customer.first_name.slice(1);
+                console.log(this.customer);
+                fetch('api/customers', {
+                    method: 'post', 
+                    body: JSON.stringify(this.customer), 
+                    headers:{
+                        'content-type': 'application/json'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    alert('Customer Added');
+                    this.customers.push(this.customer);
+                })
+                .catch(err => console.log(err));
+            }, 
+            on_filtered(filtered_items){
+                this.rows;
+            }, 
         },
-        DeleteCustomer(customer){
-                if (confirm('Are you Sure?')) {
-                    fetch(`api/customers/${customer.id}`, {
-                        method: 'Delete'
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        alert('Customer Deleted Successfully');
-                        var index = this.customers.indexOf(customer);
-                        this.$delete(this.customers, index);
-                    })
-                    .catch( error => console.log(error));
-                }
-                
-        }, 
-        UpdateCustomer(customer){
-            customer.updated_at = this.now;
-            customer.first_name = customer.first_name.charAt(0).toUpperCase() + customer.first_name.slice(1);
-            fetch(`api/customers/${customer.id}`, {
-                method: 'put',
-                body: JSON.stringify(customer), 
-                headers:{
-                    'content-type': 'application/json'
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-                    // console.log(data.data);
-                    alert('Customer Update Successfully');
-            })
-            .catch(error => console.log(error));
-        },
-        CreateCustomer(){
-            this.customer.created_at = this.now;
-            this.customer.first_name = this.customer.first_name.charAt(0).toUpperCase() + this.customer.first_name.slice(1);
-            console.log(this.customer);
-            fetch('api/customers', {
-                method: 'post', 
-                body: JSON.stringify(this.customer), 
-                headers:{
-                    'content-type': 'application/json'
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-                alert('Customer Added');
-                this.customers.push(this.customer);
-            })
-            .catch(err => console.log(err));
-        }, 
-        on_filtered(filtered_items){
-            this.rows;
-        }, 
-    },
-    mounted() {
-      // Set the initial number of items
-      this.total_rows = this.items.length;
-      this.current_page = 1;
-    },
-}
+    }
 </script>
 <style scoped>
-#searchbar:focus{
-    padding: 20px;
-    border: 1px solid #138496;
-}
-#searchbar::placeholder{
-    color: #A9AAAA;
-    text-align: center;
-    text-transform:uppercase;
-    font-size: 12px;
-}
+    .searchbar{
+        padding: 20px;
+        background-color: #F3F4F7;
+    }
+    .searchbar::placeholder{
+        color: #A9AAAA;
+        text-align: center;
+        text-transform:uppercase;
+        font-size: 15px;
+        letter-spacing:3px;
+    }
 </style>

@@ -10,7 +10,7 @@
     </li>
     <li class="menu-title">Billing services</li>
     <li>
-        <a href="{{route('invoices.index')}}">
+        <a href="{{url('invoices')}}">
             <i data-feather="file-text"></i>
 
             <span> Invoices </span>

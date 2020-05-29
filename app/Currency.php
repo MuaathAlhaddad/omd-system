@@ -5,12 +5,9 @@ namespace App;
 use App\Invoice;
 use Illuminate\Database\Eloquent\Model;
 
-class Customer extends Model
+class Currency extends Model
 {
-    protected $guarded=[''];
-    
-    public function invoices()
-    {
+    public function invoices(){
         return $this->hasMany(Invoice::class);
     }
 }

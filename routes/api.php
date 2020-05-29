@@ -3,16 +3,6 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
@@ -20,11 +10,16 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::namespace('Customers')->group(function (){
-    // Route::resource('customers', 'ApiController');
-    Route::get('customers', 'ApiController@index');
-    Route::post('customers', 'ApiController@store');
-    Route::get('customers/{customer}', 'ApiController@show');
-    Route::put('customers/{customer}', 'ApiController@update');
-    Route::delete('customers/{customer}', 'ApiController@destroy');
+    Route::resource('customers', 'ApiController');
+});
+Route::get('companyDetails', 'ApiController@getCompany_details');
+Route::put('companyDetails', 'ApiController@updateCompany_details');
+Route::get('currencies', 'ApiController@getCurrencies');
+
+Route::namespace('Invoices')->group(function (){
+    Route::resource('invoices', 'ApiController');
 });
 
+Route::namespace('Items')->group(function (){
+    Route::resource('items', 'ApiController');
+});

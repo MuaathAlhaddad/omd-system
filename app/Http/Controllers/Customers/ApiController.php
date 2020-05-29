@@ -7,12 +7,16 @@ use App\Http\Resources\Customer as CustomerResource;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Invoice;
 
 class ApiController extends Controller
 {
     public function index()
     {
-        return CustomerResource::collection(Customer::all());
+        return CustomerResource::collection(Customer::all())
+        ->additional(['meta' => [
+                        'invoice_id' => Invoice::latest()->first()->id
+                    ]]);
     }
 
     public function store(Request $request)
