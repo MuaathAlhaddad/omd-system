@@ -1115,6 +1115,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['value'],
@@ -1172,8 +1173,10 @@ __webpack_require__.r(__webpack_exports__);
       notes: '',
       summary: '',
       footer: '',
-      alertErrorSecs: 5,
-      countDownAlertError: 0,
+      alert_duration: 5,
+      alert_sec: 0,
+      alert_message: '',
+      alert_color: '',
       preview_mode: false
     };
   },
@@ -1232,9 +1235,7 @@ __webpack_require__.r(__webpack_exports__);
       var that = this;
 
       reader.onloadend = function () {
-        var imgContainers = document.getElementById('img-container').style.backgroundImage = "url(" + reader.result + ")"; // imgContainers[0] = "url("+ reader.result + ")";
-        // imgContainers[1] = "url("+ reader.result + ")";
-
+        var imgContainers = document.getElementById('img-container').style.backgroundImage = "url(" + reader.result + ")";
         document.querySelector('.img-overlay-unset').classList.replace('img-overlay-unset', 'img-overlay');
         that.companyDetails.logo = reader.result;
         that.draft_companyDetails.logo = reader.result;
@@ -1353,11 +1354,11 @@ __webpack_require__.r(__webpack_exports__);
         return console.log(err);
       });
     },
-    countDownAlert: function countDownAlert(countDownAlertError) {
-      this.countDownAlertError = countDownAlertError;
+    countDown: function countDown(alert_sec) {
+      this.alert_sec = alert_sec;
     },
-    showAlertError: function showAlertError() {
-      this.countDownAlertError = this.alertErrorSecs;
+    showAlert: function showAlert() {
+      this.alert_sec = this.alert_duration;
     },
     preview_invoice: function preview_invoice(validate) {
       console.log(validate);
@@ -1367,9 +1368,12 @@ __webpack_require__.r(__webpack_exports__);
 
       if (validate.$anyError) {
         console.log('Sorry you can not access preview mode');
-        this.showAlertError();
+        this.alert_message = 'Please complete requried inputs';
+        this.alert_color = 'danger';
+        window.scrollBy(0, -1500);
+        this.showAlert();
       } else {
-        console.log('Welcome you are currently in preview mode');
+        console.log('Welcome, you are currently in preview mode');
         this.preview_mode = true;
       }
     },
@@ -1382,7 +1386,11 @@ __webpack_require__.r(__webpack_exports__);
       validate.selected_items.$touch();
 
       if (validate.$anyError) {
-        this.showAlertError();
+        console.log('Sorry you can not access preview mode');
+        this.alert_message = 'Please complete requried inputs';
+        this.alert_color = 'danger';
+        window.scrollBy(0, -1500);
+        this.showAlert();
       } else {
         // invoice_item table
         var invoice_item = [];
@@ -1418,7 +1426,34 @@ __webpack_require__.r(__webpack_exports__);
         };
         console.log('invoice');
         console.log(invoice);
-        console.log('--------------------------------------');
+        console.log('--------------------------------------'); // fetch('api/items', {
+        //     method: 'post',
+        //     body: JSON.stringify(invoice), 
+        //     headers:{
+        //         'content-type': 'application/json'
+        //     }
+        // })
+        // .then(res => res.json())
+        // .then(res => console.log(res.data))
+        // .catch(e => console.log(e))
+
+        fetch('http://localhost:8000/api/invoices', {
+          method: 'post',
+          body: JSON.stringify(invoice),
+          headers: {
+            'content-type': 'application/json'
+          }
+        }).then(function (res) {
+          _this5.$router.push({
+            name: 'invoices-index',
+            params: {
+              alert_message: _this5.alert_message,
+              alert_color: _this5.alert_color
+            }
+          });
+        })["catch"](function (e) {
+          return console.log(e);
+        });
       }
     },
     IslogoSet: function IslogoSet() {
@@ -1444,6 +1479,17 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -1579,7 +1625,12 @@ __webpack_require__.r(__webpack_exports__);
       sort_by: 'created_at',
       sort_desc: false,
       filter: null,
-      filter_on: []
+      filter_on: [],
+      alert_message: '',
+      alert_color: '',
+      alert_sec: 0,
+      alert_duration: 5,
+      prevRoute: null
     };
   },
   computed: {
@@ -1602,7 +1653,26 @@ __webpack_require__.r(__webpack_exports__);
     },
     on_filtered: function on_filtered(filtered_items) {
       this.rows;
+    },
+    countDown: function countDown(alert_sec) {
+      this.alert_sec = alert_sec;
+    },
+    showAlert: function showAlert() {
+      this.alert_sec = this.alert_duration;
     }
+  },
+  beforeRouteEnter: function beforeRouteEnter(to, from, next) {
+    next(function (vm) {
+      // vm.prevRoute = from.path
+      if (from.path == '/invoices/create') {
+        vm.alert_message = "Invoice Created successfully";
+        vm.alert_color = 'success';
+        vm.showAlert();
+        console.log('I came from invoice create');
+      } else {
+        console.log('I came from somewhere else');
+      }
+    });
   },
   created: function created() {
     this.fetchInvoices();
@@ -47181,7 +47251,7 @@ var render = function() {
                       on: {
                         click: function($event) {
                           $event.preventDefault()
-                          return _vm.preview_invoice(_vm.$v)
+                          _vm.preview_mode = !_vm.preview_mode
                         }
                       }
                     },
@@ -47455,20 +47525,23 @@ var render = function() {
               {
                 staticStyle: { width: "98%" },
                 attrs: {
-                  show: _vm.countDownAlertError,
+                  id: "alert",
+                  show: _vm.alert_sec,
                   dismissible: "",
-                  variant: "danger"
+                  variant: _vm.alert_color
                 },
                 on: {
                   dismissed: function($event) {
-                    _vm.countDownAlertError = 0
+                    _vm.alert_sec = 0
                   },
-                  "dismiss-count-down": _vm.countDownAlert
+                  "dismiss-count-down": _vm.countDown
                 }
               },
               [
                 _vm._v(
-                  "\n                Please complete requried inputs\n            "
+                  "\n                " +
+                    _vm._s(_vm.alert_message) +
+                    "\n            "
                 )
               ]
             ),
@@ -48760,171 +48833,193 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("div", { staticClass: "card" }, [
-      _c("div", { staticClass: "card-body" }, [
-        _c("div", { staticClass: "row" }, [
-          _vm._m(0),
+  return _c(
+    "div",
+    [
+      _c(
+        "b-alert",
+        {
+          staticStyle: { width: "98%" },
+          attrs: {
+            id: "alert",
+            show: _vm.alert_sec,
+            dismissible: "",
+            variant: _vm.alert_color
+          },
+          on: {
+            dismissed: function($event) {
+              _vm.alert_sec = 0
+            },
+            "dismiss-count-down": _vm.countDown
+          }
+        },
+        [_vm._v("\r\n        " + _vm._s(_vm.alert_message) + "\r\n    ")]
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "card" }, [
+        _c("div", { staticClass: "card-body" }, [
+          _c("div", { staticClass: "row" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-sm-4 align-self-end" }),
+            _vm._v(" "),
+            _c("div", { staticClass: " col-sm-4" }, [
+              _c(
+                "div",
+                {
+                  staticClass: "btn-toolbar float-right",
+                  attrs: {
+                    role: "toolbar",
+                    "aria-label": "@lang('labels.general.toolbar_btn_groups')"
+                  }
+                },
+                [
+                  _c(
+                    "router-link",
+                    {
+                      staticClass: "btn btn-success",
+                      attrs: {
+                        to: { path: "/invoices/create" },
+                        title: "Create New Invoice"
+                      }
+                    },
+                    [
+                      _c("i", {
+                        staticClass: "fas fa-plus-circle",
+                        staticStyle: { right: "3%" },
+                        attrs: { id: "action-icon" }
+                      })
+                    ]
+                  )
+                ],
+                1
+              )
+            ])
+          ]),
           _vm._v(" "),
-          _c("div", { staticClass: "col-sm-4 align-self-end" }),
+          _c(
+            "div",
+            { staticClass: "row" },
+            [
+              _c(
+                "b-input-group",
+                { staticClass: " w-50 m-auto " },
+                [
+                  _c("b-form-input", {
+                    staticClass: "rounded-pill searchbar",
+                    attrs: { placeholder: "Search for Invoices" },
+                    model: {
+                      value: _vm.filter,
+                      callback: function($$v) {
+                        _vm.filter = $$v
+                      },
+                      expression: "filter"
+                    }
+                  })
+                ],
+                1
+              )
+            ],
+            1
+          ),
           _vm._v(" "),
-          _c("div", { staticClass: " col-sm-4" }, [
+          _c("div", { staticClass: "row" }, [
             _c(
               "div",
-              {
-                staticClass: "btn-toolbar float-right",
-                attrs: {
-                  role: "toolbar",
-                  "aria-label": "@lang('labels.general.toolbar_btn_groups')"
-                }
-              },
+              { staticClass: "col" },
               [
-                _c(
-                  "router-link",
-                  {
-                    staticClass: "btn btn-success",
-                    attrs: {
-                      to: { path: "/invoices/create" },
-                      title: "Create New Invoice",
-                      "data-toggle": "tooltip",
-                      "data-placement": "top"
+                _c("b-table", {
+                  staticClass: "text-center mt-4",
+                  attrs: {
+                    "show-empty": "",
+                    filter: _vm.filter,
+                    id: "invoices-table",
+                    "sort-by": _vm.sort_by,
+                    "sort-desc": _vm.sort_desc,
+                    items: _vm.invoices,
+                    fields: _vm.fields,
+                    "per-page": _vm.per_page,
+                    "current-page": _vm.current_page,
+                    responsive: "",
+                    hover: "",
+                    "head-variant": "light"
+                  },
+                  on: {
+                    filtered: _vm.on_filtered,
+                    "update:sortBy": function($event) {
+                      _vm.sort_by = $event
+                    },
+                    "update:sort-by": function($event) {
+                      _vm.sort_by = $event
+                    },
+                    "update:sortDesc": function($event) {
+                      _vm.sort_desc = $event
+                    },
+                    "update:sort-desc": function($event) {
+                      _vm.sort_desc = $event
                     }
                   },
-                  [
-                    _c("i", {
-                      staticClass: "fas fa-plus-circle",
-                      staticStyle: { right: "3%" },
-                      attrs: { id: "action-icon" }
-                    })
-                  ]
-                )
-              ],
-              1
-            )
-          ])
-        ]),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "row" },
-          [
-            _c(
-              "b-input-group",
-              { staticClass: " w-50 m-auto " },
-              [
-                _c("b-form-input", {
-                  staticClass: "rounded-pill searchbar",
-                  attrs: { placeholder: "Search for Invoices" },
-                  model: {
-                    value: _vm.filter,
-                    callback: function($$v) {
-                      _vm.filter = $$v
+                  scopedSlots: _vm._u([
+                    {
+                      key: "cell(#)",
+                      fn: function(data) {
+                        return [
+                          _vm._v(
+                            "\r\n                            " +
+                              _vm._s(data.index + 1) +
+                              "\r\n                        "
+                          )
+                        ]
+                      }
                     },
-                    expression: "filter"
-                  }
+                    {
+                      key: "cell(customer)",
+                      fn: function(data) {
+                        return [
+                          _vm._v(
+                            "\r\n                            " +
+                              _vm._s(data.item.customer.first_name) +
+                              "\r\n                            " +
+                              _vm._s(data.item.customer.last_name) +
+                              "\r\n                        "
+                          )
+                        ]
+                      }
+                    }
+                  ])
                 })
               ],
               1
             )
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c("div", { staticClass: "row" }, [
+          ]),
+          _vm._v(" "),
           _c(
             "div",
-            { staticClass: "col" },
+            { staticClass: "row mt-4" },
             [
-              _c("b-table", {
-                staticClass: "text-center mt-4",
+              _c("b-pagination", {
+                staticClass: " m-auto justify-content-center",
                 attrs: {
-                  "show-empty": "",
-                  filter: _vm.filter,
-                  id: "invoices-table",
-                  "sort-by": _vm.sort_by,
-                  "sort-desc": _vm.sort_desc,
-                  items: _vm.invoices,
-                  fields: _vm.fields,
-                  "per-page": _vm.per_page,
-                  "current-page": _vm.current_page,
-                  responsive: "",
-                  hover: "",
-                  "head-variant": "light"
+                  "aria-controls": "#invoices-table",
+                  "total-rows": _vm.rows,
+                  "per-page": _vm.per_page
                 },
-                on: {
-                  filtered: _vm.on_filtered,
-                  "update:sortBy": function($event) {
-                    _vm.sort_by = $event
+                model: {
+                  value: _vm.current_page,
+                  callback: function($$v) {
+                    _vm.current_page = $$v
                   },
-                  "update:sort-by": function($event) {
-                    _vm.sort_by = $event
-                  },
-                  "update:sortDesc": function($event) {
-                    _vm.sort_desc = $event
-                  },
-                  "update:sort-desc": function($event) {
-                    _vm.sort_desc = $event
-                  }
-                },
-                scopedSlots: _vm._u([
-                  {
-                    key: "cell(#)",
-                    fn: function(data) {
-                      return [
-                        _vm._v(
-                          "\r\n                            " +
-                            _vm._s(data.index + 1) +
-                            "\r\n                        "
-                        )
-                      ]
-                    }
-                  },
-                  {
-                    key: "cell(customer)",
-                    fn: function(data) {
-                      return [
-                        _vm._v(
-                          "\r\n                            " +
-                            _vm._s(data.item.customer.first_name) +
-                            "\r\n                            " +
-                            _vm._s(data.item.customer.last_name) +
-                            "\r\n                        "
-                        )
-                      ]
-                    }
-                  }
-                ])
+                  expression: "current_page"
+                }
               })
             ],
             1
           )
-        ]),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "row mt-4" },
-          [
-            _c("b-pagination", {
-              staticClass: " m-auto justify-content-center",
-              attrs: {
-                "aria-controls": "#invoices-table",
-                "total-rows": _vm.rows,
-                "per-page": _vm.per_page
-              },
-              model: {
-                value: _vm.current_page,
-                callback: function($$v) {
-                  _vm.current_page = $$v
-                },
-                expression: "current_page"
-              }
-            })
-          ],
-          1
-        )
+        ])
       ])
-    ])
-  ])
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {

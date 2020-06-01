@@ -1,8 +1,19 @@
 <template>
 <div>
+    <b-alert
+        id="alert"
+        style="width: 98%;"
+        :show="alert_sec"
+        dismissible
+        :variant="alert_color"
+        @dismissed="alert_sec=0"
+        @dismiss-count-down="countDown"
+    >
+        {{alert_message}}
+    </b-alert>
     <div class="card">
         <div class="card-body">
-            
+            <!-- <span v-if="prevRoute">{{this.prevRoute}}</span>  -->
             <!-- Card Header (Title & Create btn) -->
             <div class="row">
                     <div class="col-sm-4">
@@ -17,7 +28,7 @@
                     <div class=" col-sm-4">
                         <div class="btn-toolbar float-right" role="toolbar" aria-label="@lang('labels.general.toolbar_btn_groups')">
                             <!-- Create Customer router -->
-                            <router-link :to="{ path: `/invoices/create`}" class="btn btn-success" title="Create New Invoice" data-toggle="tooltip" data-placement="top">
+                            <router-link :to="{ path: `/invoices/create`}" class="btn btn-success" title="Create New Invoice" >
                                     <i class="fas fa-plus-circle" id="action-icon" style="right:3%"></i>
                             </router-link>                    
                         </div>
@@ -122,7 +133,11 @@ export default {
             sort_desc: false,
             filter: null,
             filter_on:[],
-
+            alert_message: '', 
+            alert_color: '',
+            alert_sec: 0,
+            alert_duration: 5,
+            prevRoute: null
         }
     },
     computed:{
@@ -142,11 +157,31 @@ export default {
         },
         on_filtered(filtered_items){
             this.rows
+        },
+        countDown(alert_sec){
+            this.alert_sec = alert_sec;
+        },
+        showAlert(){
+            this.alert_sec = this.alert_duration;
         }
+    },
+    beforeRouteEnter (to, from, next) {
+        next(vm => {
+            // vm.prevRoute = from.path
+
+            if(from.path == '/invoices/create'){
+                vm.alert_message = "Invoice Created successfully";
+                vm.alert_color = 'success';
+                vm.showAlert();
+                console.log('I came from invoice create');
+            } else{
+                console.log('I came from somewhere else');
+            }
+        });
     },
     created() {
         this.fetchInvoices();
-    },
+    }
     
 }
 </script>

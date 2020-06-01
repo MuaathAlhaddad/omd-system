@@ -15,7 +15,7 @@
                             <a href="" @click.prevent="save_invoice($v)" class="btn btn-primary float-right m-2 " data-toggle="tooltip" title="Save & Continue">
                                 Save & Continue
                             </a>
-                            <a href="" @click.prevent="preview_invoice($v)" class="btn btn-info float-right m-2" data-toggle="tooltip" title="Edit">
+                            <a href="" @click.prevent="preview_mode = !preview_mode" class="btn btn-info float-right m-2" data-toggle="tooltip" title="Edit">
                                 Edit
                             </a>
                         </div>
@@ -139,16 +139,17 @@
             </div>
         </div>
         <div v-if="!preview_mode">
-            <!-- Error Alert -->
+            <!-- Alert -->
                 <b-alert
+                    id="alert"
                     style="width: 98%;"
-                    :show="countDownAlertError"
+                    :show="alert_sec"
                     dismissible
-                    variant="danger"
-                    @dismissed="countDownAlertError=0"
-                    @dismiss-count-down="countDownAlert"
+                    :variant="alert_color"
+                    @dismissed="alert_sec=0"
+                    @dismiss-count-down="countDown"
                 >
-                    Please complete requried inputs
+                    {{alert_message}}
                 </b-alert>
 
             <!-- Save & Preview header -->
@@ -541,8 +542,10 @@ export default {
             notes: '',
             summary: '',
             footer: '',
-            alertErrorSecs: 5,
-            countDownAlertError: 0,
+            alert_duration: 5,
+            alert_sec: 0,
+            alert_message: '', 
+            alert_color: '',
             preview_mode: false,
         };
     },
@@ -602,8 +605,6 @@ export default {
             let that = this;
             reader.onloadend = function () {
                 let imgContainers = document.getElementById('img-container').style.backgroundImage = "url("+ reader.result + ")";
-                // imgContainers[0] = "url("+ reader.result + ")";
-                // imgContainers[1] = "url("+ reader.result + ")";
                 document.querySelector('.img-overlay-unset').classList.replace('img-overlay-unset', 'img-overlay');
                 that.companyDetails.logo = reader.result;            
                 that.draft_companyDetails.logo = reader.result;
@@ -704,11 +705,11 @@ export default {
             .then(res => this.currencies = res.data)
             .catch(err => console.log(err))
         },
-        countDownAlert(countDownAlertError) {
-            this.countDownAlertError = countDownAlertError;
+        countDown(alert_sec) {
+            this.alert_sec = alert_sec;
         },
-        showAlertError() {
-            this.countDownAlertError = this.alertErrorSecs;
+        showAlert() {
+            this.alert_sec = this.alert_duration;
         },  
         preview_invoice(validate){
 
@@ -718,10 +719,12 @@ export default {
             validate.selected_items.$touch();
             if(validate.$anyError){
                 console.log('Sorry you can not access preview mode');
-                
-                this.showAlertError();
+                this.alert_message = 'Please complete requried inputs';
+                this.alert_color = 'danger';
+                window.scrollBy(0, -1500);
+                this.showAlert();
             } else{
-                console.log('Welcome you are currently in preview mode');
+                console.log('Welcome, you are currently in preview mode');
                 this.preview_mode = true;
             }
         },
@@ -731,7 +734,11 @@ export default {
             validate.summary.$touch();
             validate.selected_items.$touch();
             if(validate.$anyError){
-                this.showAlertError();
+                console.log('Sorry you can not access preview mode');
+                this.alert_message = 'Please complete requried inputs';
+                this.alert_color = 'danger';
+                window.scrollBy(0, -1500);
+                this.showAlert();
             } else{
                 // invoice_item table
                 let invoice_item = [];
@@ -773,11 +780,29 @@ export default {
                 console.log('invoice');
                 console.log(invoice);
                 console.log('--------------------------------------');
-            }
+                // fetch('api/items', {
+                //     method: 'post',
+                //     body: JSON.stringify(invoice), 
+                //     headers:{
+                //         'content-type': 'application/json'
+                //     }
+                // })
+                // .then(res => res.json())
+                // .then(res => console.log(res.data))
+                // .catch(e => console.log(e))
 
-            
-            
-            
+                fetch('http://localhost:8000/api/invoices', {
+                    method: 'post',
+                    body: JSON.stringify(invoice), 
+                    headers:{
+                        'content-type': 'application/json'
+                    }
+                })
+                .then(res => {
+                    this.$router.push({name: 'invoices-index', params: {alert_message: this.alert_message, alert_color: this.alert_color}});
+                })
+                .catch(e => console.log(e))
+            }            
         }, 
         IslogoSet(){
             if(this.companyDetails.logo === 'logo')

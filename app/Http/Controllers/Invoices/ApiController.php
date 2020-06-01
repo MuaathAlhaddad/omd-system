@@ -17,6 +17,10 @@ class ApiController extends Controller
 
     public function store(Request $request)
     {
+        $request->merge([
+            'invoice_date' => date("Y-m-d", strtotime(request('invoice_date'))), 
+            'payment_due' => date("Y-m-d", strtotime(request('payment_due'))), 
+        ]);
         return new InvoiceResource(Invoice::create($request->all()));
     }
 
