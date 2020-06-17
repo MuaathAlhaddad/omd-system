@@ -13,7 +13,6 @@ $factory->define(Item::class, function (Faker $faker) {
         'desc' => 'items desc',
         'price' => 12.1,
         'item_categories_id' => factory(ItemCategory::class),
-        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+        'created_at' => Carbon::now()->format('Y-m-d'),
     ];
 });

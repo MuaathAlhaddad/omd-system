@@ -20,7 +20,8 @@ class CreateItemsTable extends Migration
             $table->double('price', 8, 2);
             $table->unsignedBigInteger('item_categories_id');
             $table->foreign('item_categories_id')->references('id')->on('item_categories')->onDelete('cascade');
-            $table->timestamps();
+            $table->date('created_at');
+            $table->date('updated_at')->nullable();
         });
     }
 

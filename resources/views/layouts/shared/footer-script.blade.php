@@ -5,6 +5,8 @@
 <script src="{{ asset('js/app.js') }}" defer></script> {{-- Vuejs App --}}
 <script src="{{ URL::asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
 <script src="{{ URL::asset('assets/js/app.min.js') }}"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
 @yield('script')
 @yield('script-bottom')
   <script>

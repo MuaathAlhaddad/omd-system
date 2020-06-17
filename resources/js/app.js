@@ -7,7 +7,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css';
 import Vuelidate from 'vuelidate';
 Vue.use(Vuelidate);
 Vue.use(bootstrapVue);
-
+Vue.prototype.$log = console.log;
 
 window.App = new Vue({
     el: '#app',

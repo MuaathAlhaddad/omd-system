@@ -1,92 +1,40 @@
 <template>
 <div>
     <div class="card">
-
         <div class="card-body">
-
             <!-- Card Header (Title & Create btn) -->
             <div class="row ">
+                    <b-alert id="alert"  :show="alert_sec" :variant="alert_color"
+                                @dismissed="alert_sec=0" @dismiss-count-down="countDown"                            
+                                class=" fixed-top position-fixed w-25 m-0 text-center rounded-0"
+                                style="-index: 2000; left: 700px;  top: 100px;"
+                                fade>
+                                <span v-html="alert_message"></span>
+                    </b-alert>
                     <div class="col-sm-4">
                         <h4 class="card-title font-weight-bold">
                             User Management
                         </h4>
-                    </div> 
+                    </div>
 
                     <div class="col-sm-4 align-self-end">
                     </div>
-            
+
                     <div class=" col-sm-4">
-                        <div class="btn-toolbar float-right" role="toolbar" aria-label="@lang('labels.general.toolbar_btn_groups')">
-                            <!-- Button trigger modal -->
-                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#customer-form" title="Create New Customer">
-                                    <i class="fas fa-plus-circle" id="action-icon" style="right:3%"></i>
-                            </button>                        
+                        <div class="btn-toolbar float-right">
+
+                            <!-- {{-- CREATE CUSTOMER --}} -->
+                            <b-button   @click="showModal('customerModal')"  variant="success" title="Create New Customer">
+                                <i class="fas fa-plus-circle" id="action-icon" style="right:3%"></i>
+                            </b-button>
+
+                            <!-- Modal Customer Create -->
+                            <omd-modal   :customers="customers"   modalType="create" @create-customer="customerCreated($event)"></omd-modal>
+              
                         </div>
                     </div>
             </div>
-
-                <!-- Modal Customer Create-->
-                <div class="modal fade" id="customer-form" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <!-- Modal header -->
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLongTitle">Create New Customer</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                                <!-- Modal Body -->
-                                <div class="modal-body">
-                                        <!-- first_name -->
-                                        <div class="form-group row">
-                                            <label for="first_name" class="col-sm-3 col-form-label">First Name</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" class="form-control" v-model="customer.first_name">
-                                            </div>
-                                        </div>
-
-                                        <!-- last_name -->
-                                        <div class="form-group row">
-                                            <label for="last_name" class="col-sm-3 col-form-label">Last Name</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" class="form-control" v-model="customer.last_name">
-                                            </div>
-                                        </div>
-
-                                        <!-- Email -->
-                                        <div class="form-group row">
-                                            <label for="email" class="col-sm-3 col-form-label">Email</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" class="form-control" v-model="customer.email">
-                                            </div>
-                                        </div>
-
-                                        <!-- phone_no -->
-                                        <div class="form-group row">
-                                            <label for="phone_no" class="col-sm-3 col-form-label">Phone no</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" class="form-control" v-model="customer.phone_no">
-                                            </div>
-                                        </div>
-
-                                        <!-- address -->
-                                        <div class="form-group row">
-                                            <label for="address" class="col-sm-3 col-form-label">Address</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" class="form-control" v-model="customer.address">
-                                            </div>
-                                        </div>
-                                </div>
-                                <!-- Modal footer -->
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button class="btn btn-primary" data-dismiss="modal" type="submit" @click="CreateCustomer">Add Customer</button>
-                                </div>
-                        </div>
-                    </div>
-                </div>
-
+                    
             <!-- Search Bar -->
             <div class="row ">
                     <b-input-group class=" w-50 m-auto ">                        
@@ -103,6 +51,8 @@
             <div class="row ">
                 <div class="col">  
                     <b-table
+                    ref="table"
+                    :key="customer.id"
                     show-empty 
                     :filter="filter"
                     @filtered="on_filtered"
@@ -129,83 +79,21 @@
                                     
                                     <div class="btn-group" role="group" aria-label="@lang('labels.backend.access.customers.customer_actions')">
 
-                                        <!-- {{-- SHOW --}} -->
+                                        <!-- {{-- SHOW CUSTOMER--}} -->
                                         <router-link :to="{ path: `/customers/${data.item.id}`,params: {id: data.item.id} }" class="btn btn-info" title="View Customer" data-toggle="tooltip" data-placement="top">
                                             <i class="fas fa-eye"></i>
                                         </router-link>
 
 
-
-                                        <!-- {{-- EDIT --}} -->
-                                        <!-- Button trigger modal -->
-                                        <button type="button" class="btn btn-primary"  data-toggle="modal" :data-target="'#'+data.item.first_name+data.item.id" title="Edit Customer">
-                                            <i class="fas fa-edit"></i>                                                    
-                                        </button>
-                                            <!-- Modal -->
-                                            <div class="modal fade" :id="data.item.first_name+data.item.id" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLongTitle">Edit Customer</h5>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-
-                                                      <!-- <form action="" @submit="UpdateCustomer"> -->
-                                                        <div class="modal-body">
-                                                            <!-- first_name -->
-                                                            <div class="form-group row">
-                                                                <label for="first_name" class="col-sm-3 col-form-label">First Name</label>
-                                                                <div class="col-sm-9">
-                                                                    <input type="text" class="form-control" v-model="data.item.first_name">
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- last_name -->
-                                                            <div class="form-group row">
-                                                                <label for="last_name" class="col-sm-3 col-form-label">Last Name</label>
-                                                                <div class="col-sm-9">
-                                                                    <input type="text" class="form-control" v-model="data.item.last_name">
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- Email -->
-                                                            <div class="form-group row">
-                                                                <label for="email" class="col-sm-3 col-form-label">Email</label>
-                                                                <div class="col-sm-9">
-                                                                    <input type="text" class="form-control" v-model="data.item.email">
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- phone_no -->
-                                                            <div class="form-group row">
-                                                                <label for="phone_no" class="col-sm-3 col-form-label">Phone no</label>
-                                                                <div class="col-sm-9">
-                                                                    <input type="text" class="form-control" v-model="data.item.phone_no">
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- address -->
-                                                            <div class="form-group row">
-                                                                <label for="address" class="col-sm-3 col-form-label">Address</label>
-                                                                <div class="col-sm-9">
-                                                                    <input type="text" class="form-control" v-model="data.item.address">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                            <button class="btn btn-primary" type="button" @click="UpdateCustomer(data.item)" data-dismiss="modal">Save changes</button>
-                                                        </div>
-                                                      <!-- </form> -->
-
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        <!-- {{-- DELETE --}} -->
+                 
+                                        <!-- {{-- EDIT CUSTOMER --}} -->
+                                        <b-button   @click="showModal(data.item)" variant="primary" title="Edit Customer">
+                                            <i class="fas fa-edit"></i>
+                                        </b-button> 
+                                        <!--Edit Customer Modal-->
+                                        <omd-modal  modalType="edit" :selectedCustomer="data.item" :key="data.item.id"  :customers="customers" @update-customer="customerUpdated(data.item, $event)" ></omd-modal>
+                     
+                                        <!-- {{-- DELETE CUSTOMER--}} -->
                                         <button  v-on:click="DeleteCustomer(data.item)" data-toggle="tooltip" data-placement="top" title="Delete Customer" class="btn btn-danger ">
                                                 <i class="fas fa-trash"></i>        
                                         </button>
@@ -214,8 +102,6 @@
                         </template>
 
                     </b-table>
-                    
-                
                 </div>
             </div>
 
@@ -246,11 +132,12 @@
         
 
     </div>    
+                  
 </div>
 </template>
 <script>
+import modal from '../customers/modal.vue';
     export default {
-        props:['data-target'],
         data() {
             return {
                 per_page: 10,
@@ -277,25 +164,34 @@
                     email: '',
                     created_at: '',
                     updated_at: '',
-                }, 
-                dismiss_modal:'',
+                },
+                alert_sec: 0,
+                alert_duration: 2,
+                alert_message: '',
+                alert_color: '',
             }
-        },
-        created() {
-                this.fetchCustomers();
         },
         computed:{
             now(){
                 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                                     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                const now = new Date();
-                return now.getDate()+'-'+now.getMonth()+'-'+now.getFullYear();
+                const today = new Date();
+                let day = today.getDate().toString();
+                let month = (today.getMonth()+1).toString();
+                let year = today.getFullYear().toString();
+                return year+'-'+month+'-'+ day;
             },
             rows() {
-            return this.customers.length
-        }
+                return this.customers.length
+            }
         },
         methods: {
+            showModal(customer){
+                if(customer ===  'customerModal') {
+                   this.$root.$emit('bv::show::modal', 'customerModal')                    
+                } else
+                   this.$root.$emit('bv::show::modal', customer.first_name.replace(/\s/g, '')+customer.id);
+            },
             fetchCustomers(){
                 fetch('api/customers')
                 .then( res => res.json())
@@ -305,59 +201,68 @@
                 .catch( err => console.log(err));
             },
             DeleteCustomer(customer){
-                    if (confirm('Are you Sure?')) {
+                this.$bvModal.msgBoxConfirm(' ',{
+                        title: "Are you sure?",        
+                        okVariant: 'success',
+                        cancelTitle: 'No',
+                        okTitle: 'Yes',
+                        cancelVariant: 'danger',
+                        headerClass: 'border-0 justify-content-center',
+                        footerClass: 'border-0 justify-content-center'
+                })
+                .then(value => {
+                    if(value) {
                         fetch(`api/customers/${customer.id}`, {
                             method: 'Delete'
                         })
                         .then(res => res.json())
                         .then(data => {
-                            alert('Customer Deleted Successfully');
                             var index = this.customers.indexOf(customer);
                             this.$delete(this.customers, index);
+                            let self = this;
+                            setTimeout( function() {
+                                self.alert_message = 'CUSTOMER DELETED SUCCESSFULLY &nbsp; <i class="fas fa-check"></i> ';
+                                self.alert_color = 'success';
+                                self.show_alert();
+                            }, 1000);
                         })
                         .catch( error => console.log(error));
                     }
-                    
-            }, 
-            UpdateCustomer(customer){
-                customer.updated_at = this.now;
-                customer.first_name = customer.first_name.charAt(0).toUpperCase() + customer.first_name.slice(1);
-                fetch(`api/customers/${customer.id}`, {
-                    method: 'put',
-                    body: JSON.stringify(customer), 
-                    headers:{
-                        'content-type': 'application/json'
-                    }
                 })
-                .then(res => res.json())
-                .then(data => {
-                        // console.log(data.data);
-                        alert('Customer Update Successfully');
-                })
-                .catch(error => console.log(error));
-            },
-            CreateCustomer(){
-                this.customer.created_at = this.now;
-                this.customer.first_name = this.customer.first_name.charAt(0).toUpperCase() + this.customer.first_name.slice(1);
-                console.log(this.customer);
-                fetch('api/customers', {
-                    method: 'post', 
-                    body: JSON.stringify(this.customer), 
-                    headers:{
-                        'content-type': 'application/json'
-                    }
-                })
-                .then(res => res.json())
-                .then(data => {
-                    alert('Customer Added');
-                    this.customers.push(this.customer);
-                })
-                .catch(err => console.log(err));
-            }, 
+                .catch(e => console.log(e))                    
+            },  
             on_filtered(filtered_items){
                 this.rows;
             }, 
+            customerCreated(e){
+                this.customers.push(e);
+                let self = this;
+                setTimeout( function() {
+                    self.alert_message = 'CUSTOMER CREATED SUCCESSFULLY &nbsp; <i class="fas fa-check"></i> ';
+                    self.alert_color = 'success';
+                    self.show_alert();
+                }, 1000);
+            },
+            customerUpdated(customer, e){
+                customer = e;
+                let self = this;
+                setTimeout( function() {
+                    self.alert_message =  'CUSTOMER UPDATED SUCCESSFULLY &nbsp; <i class="fas fa-check"></i> ';
+                    self.alert_color = 'success';
+                    self.show_alert();
+                }, 1000);
+            },
+            show_alert(){
+            this.alert_sec = this.alert_duration;
+            },
+            countDown(alert_sec){
+                this.alert_sec = alert_sec;
+            }
         },
+        created() {
+            this.fetchCustomers();
+        },
+        components: {'omd-modal': modal}
     }
 </script>
 <style scoped>
@@ -371,5 +276,9 @@
         text-transform:uppercase;
         font-size: 15px;
         letter-spacing:3px;
+    }
+    .btn:focus{
+        outline: 0;
+        box-shadow: 0 0 0 0;
     }
 </style>

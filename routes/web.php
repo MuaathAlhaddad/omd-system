@@ -21,3 +21,4 @@ Route::get('/home', 'HomeController@index')->name('home');
     Route::get('customers/{customer?}', 'HomeController@customers')->where('customer', '[0-9]+');
     Route::get('invoices/{invoice?}', 'HomeController@invoices')->where('invoice', '[0-9]+');
     Route::get('invoices/create', 'HomeController@invoices')->where('invoice', '[0-9]+');
+    Route::get('items', 'HomeController@items');

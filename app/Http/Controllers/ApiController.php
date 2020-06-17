@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Company_details;
 use App\Currency;
-use App\Http\Resources\Company_details as Company_detailsResource;
-use App\Http\Resources\Currency as ResourcesCurrency;
+use App\Customer;
+use App\Company_details;
 use Illuminate\Http\Request;
+use App\Http\Resources\Currency as ResourcesCurrency;
+use App\Http\Resources\Company_details as Company_detailsResource;
 
 class ApiController extends Controller
 {
@@ -22,5 +23,12 @@ class ApiController extends Controller
     }
     public function getCurrencies(){
         return ResourcesCurrency::collection(Currency::all());
+    }
+
+    public function validator($email)
+    {
+        $exists = Customer::where('email', $email)->exists();
+
+        return response()->json(['unique' => !$exists ]); 
     }
 }

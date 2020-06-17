@@ -7,15 +7,17 @@ use App\Http\Resources\Customer as CustomerResource;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use App\Invoice;
 
 class ApiController extends Controller
 {
     public function index()
     {
+        $invoice = Invoice::latest()->first();
         return CustomerResource::collection(Customer::all())
         ->additional(['meta' => [
-                        'invoice_id' => Invoice::latest()->first()->id
+                        'invoice_id' =>  $invoice ? $invoice->id : 0
                     ]]);
     }
 
@@ -42,16 +44,6 @@ class ApiController extends Controller
         $customer = Customer::find($id);
         $customer->delete();
         return new CustomerResource($customer);
-    }
-
-
-    public function validateForm ($request) {
-        // dd($request);
-        $request->validate([
-            'email' => 'required|unique:customers,email,'.$request->id,
-            'phone_no' => 'required|numeric'
-        ]);
-        return Arr::except($request->all(), ['_token', '_method', 'id']); 
     }
 
 }

@@ -20,7 +20,8 @@ class CreateCustomersTable extends Migration
             $table->string('phone_no');
             $table->text('address');
             $table->string('email')->unique();
-            $table->timestamps();
+            $table->date('created_at');
+            $table->date('updated_at')->nullable();
         });
     }
 

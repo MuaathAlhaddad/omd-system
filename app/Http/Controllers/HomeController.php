@@ -19,4 +19,7 @@ class HomeController extends Controller
     {
         return view('layouts.vertical');
     }
+    public function items(){
+        return view('layouts.vertical');
+    }
 }

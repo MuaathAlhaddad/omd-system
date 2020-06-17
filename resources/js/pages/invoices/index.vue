@@ -13,7 +13,6 @@
     </b-alert>
     <div class="card">
         <div class="card-body">
-            <!-- <span v-if="prevRoute">{{this.prevRoute}}</span>  -->
             <!-- Card Header (Title & Create btn) -->
             <div class="row">
                     <div class="col-sm-4">

@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
 {
+    protected $guarded=[''];
+    public $timestamps = false;
+
+
     public function invoices(){
         return $this.belongsToMany(Invoice::class, 'invoice_item');
     }

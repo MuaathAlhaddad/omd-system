@@ -29,7 +29,7 @@
         </a>
     </li>
     <li>
-        <a href="/apps/calendar">
+        <a href="{{url('/items')}}">
             <i data-feather="box"></i>
             <span> Services & Products </span>
         </a>

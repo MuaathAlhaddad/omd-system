@@ -20,7 +20,6 @@ $factory->define(Invoice::class, function (Faker $faker) {
         'summary'         => 'The summary of the invoice', 
         'notes'         => 'This is the the Invoice notes', 
         'footer'        => 'Footer of the invoice',
-        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-        'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+        'created_at' => Carbon::now()->format('Y-m-d'),
     ];
 });

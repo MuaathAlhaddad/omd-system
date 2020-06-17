@@ -27,7 +27,8 @@ class CreateInvoicesTable extends Migration
             $table->foreign('currency_id')->references('id')->on('currencies')->onDelete('cascade');
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
-            $table->timestamps();
+            $table->date('created_at');
+            $table->date('updated_at')->nullable();
         });
     }
 
